@@ -1,5 +1,8 @@
 import { Router } from "express";
 import AdminController from "../controllers/auth/AdminController";
+import CandidateController from './../controllers/auth/CandidateController';
+import CompanyController from './../controllers/auth/CompanyController';
+
 const router = Router()
 
 /**
@@ -9,6 +12,8 @@ const router = Router()
  * @example same
  */
 router.post('/signup', AdminController.signUp)
+router.post('/signup-candidate', CandidateController.signUpCandidate)
+router.post('/signup-company', CompanyController.signUpCompany)
 
 /**
  * @description 2. login user
@@ -17,6 +22,8 @@ router.post('/signup', AdminController.signUp)
  * @example same
  */
 router.post('/login', AdminController.login)
+router.post('/login-candidate', CandidateController.loginCandidate)
+router.post('/login-company', CompanyController.loginCompany)
 
 /**
  * @description 3. logout user

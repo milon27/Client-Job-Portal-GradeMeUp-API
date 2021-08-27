@@ -7,20 +7,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// test-many to many
-model post {
-  pid   Int    @id @default(autoincrement())
-  title String
-  tags  tag[]  @relation("post_tag")
-}
-
-model tag {
-  tid   Int    @id @default(autoincrement())
-  name  String
-  posts post[] @relation("post_tag")
-}
-
-//test
+//utils
 
 enum Gender {
   MALE
@@ -45,26 +32,30 @@ model Admin {
 }
 
 model Candidate {
-  id           Int        @id @default(autoincrement())
-  name         String     @db.VarChar(50)
-  email        String     @unique @db.VarChar(50)
-  password     String
-  image_url    String
-  gender       Gender     @default(MALE)
-  dob          DateTime
-  country      String
-  region       String
-  full_address String
-  zip_code     String     @db.VarChar(20)
-  languages    Language[] @relation("candidate_language")
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(50)
+  email     String     @unique @db.VarChar(50)
+  password  String
+  // image_url    String
+  gender    Gender     @default(MALE)
+  // dob          DateTime
+  // country      String
+  // region       String
+  // full_address String
+  // zip_code  String     @db.VarChar(20)
+  
+  languages Language[] @relation("candidate_language")
 
   //professional info
-  job_type JOB_TYPE @default(FULL_TIME)
+  job_type          JOB_TYPE       @default(FULL_TIME)
+  //one candidate has one job profession
+  job_profession    JobProfession? @relation(fields: [job_profession_id], references: [id])
+  job_profession_id Int?
 
-  job_category JobCategory @relation(fields: [job_cat_id], references: [id])
-  job_cat_id   Int
-
+  //others
+  private    Boolean  @default(false)
   created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("candidate")
 }
@@ -72,16 +63,24 @@ model Candidate {
 // other models
 
 model JobCategory {
-  id        Int         @id @default(autoincrement())
-  title     String
-  Candidate Candidate[]
+  id          Int             @id @default(autoincrement())
+  title       String
+  professions JobProfession[]
 
   @@map("job_category")
 }
 
-// model JobProfession {
-//   id Int @id @default(autoincrement())
-// }
+model JobProfession {
+  id    Int    @id @default(autoincrement())
+  title String
+
+  job_category JobCategory @relation(fields: [job_cat_id], references: [id])
+  job_cat_id   Int
+
+  candidates Candidate[]
+
+  @@map("job_profession")
+}
 
 model Language {
   id         Int         @id @default(autoincrement())

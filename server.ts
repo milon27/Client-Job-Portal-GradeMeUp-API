@@ -9,7 +9,6 @@ import ErrorMid from './routers/middleware/ErrorMid';
 
 //import routes
 import Routers from './routers/index';
-import PostRouter from './routers/postRouter'
 
 //init
 dotenv.config()
@@ -27,7 +26,7 @@ app.use(cors({ origin: true, credentials: true }))
 //routers
 app.get('/', (req, res) => res.send('Running.. 🚀'))
 app.use('/auth', Routers.authRouter)
-app.use('/test', PostRouter)
+
 // app.use('/private', AuthMid, require('./routers/authRouter'))
 
 

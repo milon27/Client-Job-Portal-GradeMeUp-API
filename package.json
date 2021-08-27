@@ -38,6 +38,7 @@
     "p-init": "prisma init",
     "p-mg": "prisma migrate dev --name init && prisma generate",
     "p-generate": "prisma generate",
+    "p-pull": "prisma db pull --force",
     "dev": "nodemon server.ts"
   },
   "keywords": [],

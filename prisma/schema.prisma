@@ -7,7 +7,120 @@ generator client {
   provider = "prisma-client-js"
 }
 
-//utils
+// all models
+model admin {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(100)
+  phone      String   @db.VarChar(40)
+  email      String   @unique @db.VarChar(155)
+  password   String
+  created_at DateTime @default(now())
+}
+
+model candidate {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(155)
+  phone        String   @db.VarChar(40)
+  password     String
+  image_url    String
+  gender       Gender   @default(MALE)
+  dob          DateTime
+  //address
+  country      String
+  region       String
+  full_address String
+  zip_code     String   @db.VarChar(20)
+
+  private Boolean @default(false)
+
+  //work
+  job_type              JOB_TYPE       @default(FULL_TIME)
+  work_experience       WorkExperience @default(YR_1)
+  work_area_radius      Float          @default(10)
+  working_hour_per_week Float          @default(25)
+  salary_per_hour       Float          @default(25)
+  salary_per_month      Float          @default(2500)
+
+  availability_date  AvailabilityDate  @default(IMMEDIATELY)
+  work_shift         WorkShift         @default(DAY)
+  certificate        Certificate       @default(NONE)
+  other_certificate  String            @db.VarChar(250)
+  license            String            @db.VarChar(250)
+  it_skills          String            @db.VarChar(250)
+  expected_benefits  String            @db.VarChar(250)
+  current_employment CurrentEmployment @default(STUDENT)
+
+  //many to many
+  languages         language[]     @relation("candidate_language")
+  // one to many
+  job_profession    job_profession @relation(fields: [job_profession_id], references: [id])
+  job_profession_id Int
+
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model language {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(100)
+
+  candidates candidate[] @relation("candidate_language")
+}
+
+model job_category {
+  id          Int              @id @default(autoincrement())
+  title       String
+  professions job_profession[]
+}
+
+model job_profession {
+  id    Int    @id @default(autoincrement())
+  title String
+
+  job_category job_category @relation(fields: [job_cat_id], references: [id])
+  job_cat_id   Int
+
+  candidates candidate[]
+}
+
+//utils -- candidate
+
+enum Certificate {
+  NONE
+  SECENDARY_SCHOOL
+  EXTENDED_SECENDARY_SCHOOL
+  HIGH_SECENDARY_SCHOOL
+  DIPLOMA
+  BACHELOR
+}
+
+enum AvailabilityDate {
+  IMMEDIATELY
+  MONTH_1_3
+  MONTH_3_6
+}
+
+enum WorkExperience {
+  YR_1
+  YR_1_3
+  YR_3_5
+  YR_MORE_5
+  YR_MORE_10
+}
+
+enum CurrentEmployment {
+  STUDENT
+  FOREIGNERS
+  UNEMPLOYED
+  EMPLOYED
+}
+
+enum WorkShift {
+  DAY
+  NIGHT
+}
 
 enum Gender {
   MALE
@@ -18,74 +131,4 @@ enum JOB_TYPE {
   FULL_TIME
   PART_TIME
   INTERNSHIP
-}
-
-// all models
-model Admin {
-  id         Int      @id @default(autoincrement())
-  name       String   @db.VarChar(100)
-  email      String   @unique @db.VarChar(155)
-  password   String
-  created_at DateTime @default(now())
-
-  @@map("admin")
-}
-
-model Candidate {
-  id        Int        @id @default(autoincrement())
-  name      String     @db.VarChar(50)
-  email     String     @unique @db.VarChar(50)
-  password  String
-  // image_url    String
-  gender    Gender     @default(MALE)
-  // dob          DateTime
-  // country      String
-  // region       String
-  // full_address String
-  // zip_code  String     @db.VarChar(20)
-  
-  languages Language[] @relation("candidate_language")
-
-  //professional info
-  job_type          JOB_TYPE       @default(FULL_TIME)
-  //one candidate has one job profession
-  job_profession    JobProfession? @relation(fields: [job_profession_id], references: [id])
-  job_profession_id Int?
-
-  //others
-  private    Boolean  @default(false)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  @@map("candidate")
-}
-
-// other models
-
-model JobCategory {
-  id          Int             @id @default(autoincrement())
-  title       String
-  professions JobProfession[]
-
-  @@map("job_category")
-}
-
-model JobProfession {
-  id    Int    @id @default(autoincrement())
-  title String
-
-  job_category JobCategory @relation(fields: [job_cat_id], references: [id])
-  job_cat_id   Int
-
-  candidates Candidate[]
-
-  @@map("job_profession")
-}
-
-model Language {
-  id         Int         @id @default(autoincrement())
-  title      String
-  candidates Candidate[] @relation("candidate_language")
-
-  @@map("language")
 }

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PrismaClient, Admin } from "@prisma/client";
+import { PrismaClient, admin } from "@prisma/client";
 import ApiResponse from '../../models/ApiResponse';
 import Define from "../../utils/Define";
 import Helper from "../../utils/Helper";
@@ -45,21 +45,22 @@ const CompanyController = {
                 throw new Error("Already Registered with this email.")
             }
             //create the new user.
-            const user = await db.admin.create({
-                data: {
-                    name: name,
-                    email,
-                    password: hashpass
-                }
-            })
+            // const user = await db.admin.create({
+            //     data: {
+            //         name: name,
+            //         email,
+            //         password: hashpass
+            //     }
+            // })
 
-            //get token and set into cookie
-            const token = Helper.getJWTtoken(user.id + "")
-            //send token in http cookie with no expire
-            res.cookie(Define.TOKEN, token, Define.SESSION_COOKIE_OPTION)
+            // //get token and set into cookie
+            // const token = Helper.getJWTtoken(user.id + "")
+            // //send token in http cookie with no expire
+            // res.cookie(Define.TOKEN, token, Define.SESSION_COOKIE_OPTION)
 
             //, token-if you want you can pass the token
-            res.status(200).json(ApiResponse<Admin>(false, "user created successfully", user))
+            // res.status(200).json(ApiResponse<admin>(false, "user created successfully", user))
+            res.status(200).json(ApiResponse(false, "test", false))
 
         } catch (e) {
             console.log("auth sign up: ", e);
@@ -100,8 +101,8 @@ const CompanyController = {
             res.cookie(Define.TOKEN, token, Define.SESSION_COOKIE_OPTION)
 
             //, token-if you want you can pass the token
-            res.status(200).json(ApiResponse<Admin>(false, "user logged in successfully", user))
-
+            // res.status(200).json(ApiResponse<admin>(false, "user logged in successfully", user))
+            res.status(200).json(ApiResponse(false, "test", false))
         } catch (e) {
             console.log("auth login: ", e);
             let response = ApiResponse(true, e.message, e);

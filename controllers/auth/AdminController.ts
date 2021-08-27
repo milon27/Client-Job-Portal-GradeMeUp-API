@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PrismaClient, Admin } from "@prisma/client";
+import { PrismaClient, admin } from "@prisma/client";
 import ApiResponse from '../../models/ApiResponse';
 import Define from "../../utils/Define";
 import Helper from "../../utils/Helper";
@@ -23,7 +23,7 @@ const AdminController = {
      */
     signUp: async (req: Request, res: Response) => {
         try {
-            const { email, name, password } = req.body
+            const { email, name, password, phone } = req.body
             //validatioin handle by sequlize
             if (password.length < 6) {
                 throw new Error("Password Length Should be More than 5 character.")
@@ -49,6 +49,7 @@ const AdminController = {
                 data: {
                     name: name,
                     email,
+                    phone,
                     password: hashpass
                 }
             })
@@ -59,7 +60,7 @@ const AdminController = {
             res.cookie(Define.TOKEN, token, Define.SESSION_COOKIE_OPTION)
 
             //, token-if you want you can pass the token
-            res.status(200).json(ApiResponse<Admin>(false, "user created successfully", user))
+            res.status(200).json(ApiResponse<admin>(false, "user created successfully", user))
 
         } catch (e) {
             console.log("auth sign up: ", e);
@@ -100,7 +101,7 @@ const AdminController = {
             res.cookie(Define.TOKEN, token, Define.SESSION_COOKIE_OPTION)
 
             //, token-if you want you can pass the token
-            res.status(200).json(ApiResponse<Admin>(false, "user logged in successfully", user))
+            res.status(200).json(ApiResponse<admin>(false, "user logged in successfully", user))
 
         } catch (e) {
             console.log("auth login: ", e);
